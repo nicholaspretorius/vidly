@@ -4,19 +4,14 @@ const Joi = require('joi');
 const { Customer, validateCustomer } = require('../models/customer');
 const router = express.Router();
 const not_found = { "not_found": "Customer ID not found." };
+const auth = require('../middleware/auth');
 
-
-
-
-
-
-
-router.get('/', async (req, res) => {
+router.get('/', auth, async (req, res) => {
     const result = await Customer.find();
     res.send(result);
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     let result;
     try {
         result = await Customer.findById(req.params.id);

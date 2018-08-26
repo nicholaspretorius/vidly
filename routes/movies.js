@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const { validate_movie, Movie } = require('../models/movie');
 const { Genre } = require('../models/genre');
+const auth = require('../middleware/auth');
 const router = express.Router();
 const not_found = { "not_found": "Movie ID not found." };
 
@@ -19,7 +20,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', auth, async (req, res) => {
     const { error } = validate_movie(req.body);
 
     if(error) res.status(400).send(error);
@@ -87,7 +88,7 @@ router.put('/:id', async (req, res) => {
     } 
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', auth, async (req, res) => {
     
     const result = await Movie.findByIdAndRemove(req.params.id);
 

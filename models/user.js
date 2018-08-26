@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const Joi = require('joi');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const password_regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(.{8,24})/;
 
@@ -25,16 +27,22 @@ const schema = mongoose.Schema({
         required: true, 
         trim: true,
         minlength: 8, 
-        maxlength: 24,
+        maxlength: 1024, // hashed length
         validate: {
             validator: function(value) {
                 return value.match(password_regex);
             }
         }
-    }
+    },
+    isAdmin: Boolean
 });
 
 schema.plugin(uniqueValidator);
+
+schema.methods.generateAuthToken = function() {
+    const token = jwt.sign({ _id: this._id, isAdmin: this.isAdmin }, config.get('jwtPrivateKey'));
+    return token;
+}
 
 const User = mongoose.model('Users', schema);
 
@@ -49,6 +57,7 @@ function validateUser(user) {
 }
 
 module.exports = {
+    userSchema: schema,
     validateUser: validateUser,
     User: User
 }
