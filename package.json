@@ -8,6 +8,9 @@
     "start": "node index.js",
     "test": "jest --watchAll --verbose --runInBand"
   },
+  "engines": {
+    "node": "8.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
