@@ -15,7 +15,7 @@ Fawn.init(mongoose);
 
 router.get('/', auth, async (req, res) => {
     try {
-        const result = await Rental.find().sort('-rentalDate');
+        const result = await Rental.find().sort('-dateOut');
 
         if(!result) return res.status(401).send(rental_not_found);
 
